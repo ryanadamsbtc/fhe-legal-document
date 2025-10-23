@@ -39,7 +39,7 @@ export function Home() {
     return undefined;
   }, [chain?.id]);
 
-  const { instance, isLoading, error } = useZamaInstance();
+  const { instance } = useZamaInstance();
 
   const handleEncryptAndSave = async () => {
     if (!provider || !address) return;
@@ -77,13 +77,18 @@ export function Home() {
 
   const handleAllow = async () => {
     if (!provider || !address) return;
+    const normalizedDocId = BigInt(docId);
+    if (!allowAddr) { alert('Enter address to allow'); return; }
+    let targetAddr: string;
+    try {
+      targetAddr = ethers.getAddress(allowAddr);
+    } catch (err) {
+      alert('Invalid address');
+      return;
+    }
     const signer = await provider.getSigner();
-    if (!instance) { alert('Zama FHE instance not initialized'); return; }
-    const input = await instance.createEncryptedInput(legalDocsAddress, address);
-    input.addAddress(allowAddr);
-    const encrypted = await input.encrypt();
     const c = new Contract(legalDocsAddress, legalDocsAbi as any, signer);
-    const tx = await c.allowSecret(BigInt(docId), encrypted.handles[0], encrypted.inputProof);
+    const tx = await c.allowSecret(normalizedDocId, targetAddr);
     await tx.wait();
     alert('Allowed');
   };
