@@ -64,20 +64,10 @@ describe("LegalDocs", function () {
     const enc = await fhevm.createEncryptedInput(contractAddress, signers.owner.address).add256(555n).encrypt();
     await (await contract.connect(signers.owner).saveDocument(docId, "doc", "hash", enc.handles[0], enc.inputProof)).wait();
 
-    const addrInput = await fhevm
-      .createEncryptedInput(contractAddress, signers.owner.address)
-      .addAddress(signers.bob.address)
-      .encrypt();
-
-    await (
-      await contract
-        .connect(signers.owner)
-        .allowSecret(docId, addrInput.handles[0] as any, addrInput.inputProof)
-    ).wait();
+    await (await contract.connect(signers.owner).allowSecret(docId, signers.bob.address)).wait();
 
     const handle = await contract.getSecret(signers.owner.address, docId);
     const clearForBob = await fhevm.userDecryptEuint(FhevmType.euint256, handle, contractAddress, signers.bob);
     expect(clearForBob).to.eq(555n);
   });
 });
-
