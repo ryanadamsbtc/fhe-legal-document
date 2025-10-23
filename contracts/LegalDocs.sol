@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {FHE, euint256, eaddress, externalEuint256, externalEaddress} from "@fhevm/solidity/lib/FHE.sol";
+import {FHE, euint256, eaddress, externalEuint256} from "@fhevm/solidity/lib/FHE.sol";
 import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 
 contract LegalDocs is SepoliaConfig {
@@ -58,19 +58,15 @@ contract LegalDocs is SepoliaConfig {
         return _secrets[owner][docId];
     }
 
-    function allowSecret(
-        uint256 docId,
-        externalEaddress addrHandle,
-        bytes calldata inputProof
-    ) external {
-        eaddress encAddr = FHE.fromExternal(addrHandle, inputProof);
+    function allowSecret(uint256 docId, address allowedAddr) external {
+        eaddress encAddr = FHE.asEaddress(allowedAddr);
         _allowed[msg.sender][docId] = encAddr;
 
         euint256 sec = _secrets[msg.sender][docId];
-        if (sec != euint256.wrap(bytes32(0))) {
-            // Grant permanent access to the allowed address
-            FHE.allow(sec, encAddr);
+        if (FHE.isInitialized(sec)) {
+            FHE.allow(sec, allowedAddr);
         }
+
         emit SecretAllowed(msg.sender, docId);
     }
 }
