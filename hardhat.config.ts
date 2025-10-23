@@ -37,7 +37,7 @@ const config: HardhatUserConfig = {
   },
   networks: {
     hardhat: {
-      accounts: PRIVATE_KEY ? [{ privateKey: PRIVATE_KEY, balance: "10000000000000000000000" }] : { mnemonic: MNEMONIC },
+      accounts: { mnemonic: MNEMONIC },
       chainId: 31337,
     },
     anvil: {
