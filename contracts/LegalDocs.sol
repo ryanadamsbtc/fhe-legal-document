@@ -2,9 +2,9 @@
 pragma solidity ^0.8.24;
 
 import {FHE, euint256, eaddress, externalEuint256} from "@fhevm/solidity/lib/FHE.sol";
-import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
+import {ZamaEthereumConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 
-contract LegalDocs is SepoliaConfig {
+contract LegalDocs is ZamaEthereumConfig {
     struct DocMeta {
         string name;
         string ipfsHash;

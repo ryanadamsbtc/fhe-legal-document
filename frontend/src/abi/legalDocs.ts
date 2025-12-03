@@ -97,4 +97,4 @@ export const legalDocsAbi = [
   }
 ] as const;
 
-export const legalDocsAddress = "0x4c88b0F2d76016ae8089d6398Df56ADfaE74E323" as const;
+export const legalDocsAddress = "0x3795e195D3Ce3ae2F74B14295585134a5A5642A1" as const;
